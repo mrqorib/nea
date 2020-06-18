@@ -211,9 +211,9 @@ def get_data(paths, prompt_id, vocab_size, maxlen, max_instances, tokenize_text=
 	
 	if max_instances:
 		random.seed(prompt_id)
-		train_len = 0.9 * max_instances
-		dev_len = 0.05 * max_instances
-		test_len = 0.05 * max_instances
+		train_len = int(0.9 * max_instances)
+		dev_len = int(0.05 * max_instances)
+		test_len = int(0.05 * max_instances)
 		train_idx = random.sample(list(range(len(train_x))), k=train_len)
 		dev_idx = random.sample(list(range(len(dev_x))), k=dev_len)
 		test_idx = random.sample(list(range(len(test_x))), k=test_len)
