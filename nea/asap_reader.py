@@ -190,7 +190,7 @@ def read_dataset(file_path, prompt_id, maxlen, vocab, tokenize_text, to_lower, s
 	logger.info('  <num> hit rate: %.2f%%, <unk> hit rate: %.2f%%' % (100*num_hit/total, 100*unk_hit/total))
 	return data_x, data_y, prompt_ids, maxlen_x
 
-def get_data(paths, prompt_id, vocab_size, maxlen, tokenize_text=True, to_lower=True, sort_by_len=False, vocab_path=None, score_index=6):
+def get_data(paths, prompt_id, vocab_size, maxlen, max_instances, tokenize_text=True, to_lower=True, sort_by_len=False, vocab_path=None, score_index=6):
 	train_path, dev_path, test_path = paths[0], paths[1], paths[2]
 	
 	if not vocab_path:
@@ -209,6 +209,25 @@ def get_data(paths, prompt_id, vocab_size, maxlen, tokenize_text=True, to_lower=
 	dev_x, dev_y, dev_prompts, dev_maxlen = read_dataset(dev_path, prompt_id, 0, vocab, tokenize_text, to_lower)
 	test_x, test_y, test_prompts, test_maxlen = read_dataset(test_path, prompt_id, 0, vocab, tokenize_text, to_lower)
 	
+	if max_instances:
+    	random.seed(prompt_id)
+		train_len = 0.9 * max_instances
+		dev_len = 0.05 * max_instances
+		test_len = 0.05 * max_instances
+		train_idx = random.choices(list(range(len(train_x))), k=train_len)
+		dev_idx = random.choices(list(range(len(dev_x))), k=dev_len)
+		test_idx = random.choices(list(range(len(test_x))), k=test_len)
+		
+		train_x = [train_x[_i] for i in train_idx]
+		train_y = [train_y[_i] for i in train_idx]
+		train_prompts = [train_prompts[_i] for i in train_idx]
+		dev_x = [dev_x[_i] for i in dev_idx]
+		dev_y = [dev_y[_i] for i in dev_idx]
+		dev_prompts = [dev_prompts[_i] for i in dev_idx]
+		test_x = [test_x[_i] for i in test_idx]
+		test_y = [test_y[_i] for i in test_idx]
+		test_prompts = [test_prompts[_i] for i in test_idx]
+
 	overal_maxlen = max(train_maxlen, dev_maxlen, test_maxlen)
 	
 	return ((train_x,train_y,train_prompts), (dev_x,dev_y,dev_prompts), (test_x,test_y,test_prompts), vocab, len(vocab), overal_maxlen, 1)
