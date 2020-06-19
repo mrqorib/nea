@@ -190,7 +190,7 @@ def read_dataset(file_path, prompt_id, maxlen, vocab, tokenize_text, to_lower, s
 	logger.info('  <num> hit rate: %.2f%%, <unk> hit rate: %.2f%%' % (100*num_hit/total, 100*unk_hit/total))
 	return data_x, data_y, prompt_ids, maxlen_x
 
-def get_data(paths, prompt_id, vocab_size, maxlen, max_instances, tokenize_text=True, to_lower=True, sort_by_len=False, vocab_path=None, score_index=6):
+def get_data(paths, prompt_id, vocab_size, maxlen, max_instances, random_seed, tokenize_text=True, to_lower=True, sort_by_len=False, vocab_path=None, score_index=6):
 	train_path, dev_path, test_path = paths[0], paths[1], paths[2]
 	
 	if not vocab_path:
@@ -210,7 +210,10 @@ def get_data(paths, prompt_id, vocab_size, maxlen, max_instances, tokenize_text=
 	test_x, test_y, test_prompts, test_maxlen = read_dataset(test_path, prompt_id, 0, vocab, tokenize_text, to_lower)
 	
 	if max_instances:
-		random.seed(prompt_id)
+		if random_seed:
+			random.seed(random_seed)
+		else:
+			random.seed(prompt_id)
 		train_len = int(0.9 * max_instances)
 		dev_len = int(0.05 * max_instances)
 		test_len = int(0.05 * max_instances)

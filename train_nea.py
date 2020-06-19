@@ -22,6 +22,7 @@ parser.add_argument("-ts", "--test", dest="test_path", type=str, metavar='<str>'
 parser.add_argument("-o", "--out-dir", dest="out_dir_path", type=str, metavar='<str>', required=True, help="The path to the output directory")
 parser.add_argument("-p", "--prompt", dest="prompt_id", type=int, metavar='<int>', required=False, help="Promp ID for ASAP dataset. '0' means all prompts.")
 parser.add_argument("-mi", "--max_instances", dest="max_instances", type=int, metavar='<int>', required=False, help="Number of k-cross validation fold.")
+parser.add_argument("-rs", "--random_seed", dest="random_seed", type=int, metavar='<int>', required=False, help="Random seed.")
 parser.add_argument("-t", "--type", dest="model_type", type=str, metavar='<str>', default='regp', help="Model type (reg|regp|breg|bregp) (default=regp)")
 parser.add_argument("-u", "--rec-unit", dest="recurrent_unit", type=str, metavar='<str>', default='lstm', help="Recurrent unit type (lstm|gru|simple) (default=lstm)")
 parser.add_argument("-a", "--algorithm", dest="algorithm", type=str, metavar='<str>', default='rmsprop', help="Optimization algorithm (rmsprop|sgd|adagrad|adadelta|adam|adamax) (default=rmsprop)")
@@ -71,7 +72,7 @@ from keras.preprocessing import sequence
 
 # data_x is a list of lists
 (train_x, train_y, train_pmt), (dev_x, dev_y, dev_pmt), (test_x, test_y, test_pmt), vocab, vocab_size, overal_maxlen, num_outputs = dataset.get_data(
-	(args.train_path, args.dev_path, args.test_path), args.prompt_id, args.vocab_size, args.maxlen, args.max_instances, tokenize_text=True, to_lower=True, sort_by_len=False, vocab_path=args.vocab_path)
+	(args.train_path, args.dev_path, args.test_path), args.prompt_id, args.vocab_size, args.maxlen, args.max_instances, args.random_seed, tokenize_text=True, to_lower=True, sort_by_len=False, vocab_path=args.vocab_path)
 
 # Dump vocab
 with open(out_dir + '/vocab.pkl', 'wb') as vocab_file:
