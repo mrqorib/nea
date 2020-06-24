@@ -210,26 +210,9 @@ def get_data(paths, prompt_id, vocab_size, maxlen, max_instances, random_seed, t
 	test_x, test_y, test_prompts, test_maxlen = read_dataset(test_path, prompt_id, 0, vocab, tokenize_text, to_lower)
 	
 	if max_instances:
-		if random_seed:
-			random.seed(random_seed)
-		else:
-			random.seed(prompt_id)
-		train_len = int(0.9 * max_instances)
-		dev_len = int(0.05 * max_instances)
-		test_len = int(0.05 * max_instances)
-		train_idx = random.sample(list(range(len(train_x))), k=train_len)
-		dev_idx = random.sample(list(range(len(dev_x))), k=dev_len)
-		test_idx = random.sample(list(range(len(test_x))), k=test_len)
-		
-		train_x = [train_x[_i] for _i in train_idx]
-		train_y = [train_y[_i] for _i in train_idx]
-		train_prompts = [train_prompts[_i] for _i in train_idx]
-		dev_x = [dev_x[_i] for _i in dev_idx]
-		dev_y = [dev_y[_i] for _i in dev_idx]
-		dev_prompts = [dev_prompts[_i] for _i in dev_idx]
-		test_x = [test_x[_i] for _i in test_idx]
-		test_y = [test_y[_i] for _i in test_idx]
-		test_prompts = [test_prompts[_i] for _i in test_idx]
+		train_x = train_x[:max_instances]
+		train_y = train_y[:max_instances]
+		train_prompts = train_prompts[:max_instances]
 
 	overal_maxlen = max(train_maxlen, dev_maxlen, test_maxlen)
 	
